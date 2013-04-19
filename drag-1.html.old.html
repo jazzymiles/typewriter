@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <style>
+      body {
+        margin: 0px;
+        padding: 0px;
+        width:  100%;
+  		height: 100%;
+      }
+    </style>
+    <script src="http://www.html5canvastutorials.com/libraries/kinetic-v4.0.0.js"></script>
+    <script>
+    var colors = ["red", "orange", "yellow", "green", "blue", "purple"];
+    var boxs = [];
+    var stage;
+    var layer;
+    var i=0;
+    var xrow=0;
+    var yrow=0;
+    window.onload = function() {
+       stage = new Kinetic.Stage({
+          container: "container",
+          width: window.innerWidth,
+          height: window.innerHeight
+        });
+        layer = new Kinetic.Layer();
+
+        stage.add(layer);
+
+    };       	
+     window.onresize=function(){
+			//console.log(container.height);
+			//
+			stage.setWidth(window.innerWidth);
+			stage.setHeight(window.innerHeight);
+	};
+	window.onkeypress = function(event) {
+		//var char = getChar(event || window.event);
+		
+		setBox ('l');
+		//return false
+	}
+	function loadImages(sources, callback) {
+        var images = {};
+        var loadedImages = 0;
+        var numImages = 0;
+        // get num of sources
+        for(var src in sources) {
+          numImages++; 
+        }
+        for(var src in sources) {
+          images[src] = new Image();
+          images[src].onload = function() {
+            if(++loadedImages >= numImages) {
+              callback(images);
+            }
+          };
+          images[src].src = sources[src];
+        }
+    }
+	function setBox (arg){
+			i++;
+			var imageSrc;
+            var box = new Image();
+            box.onload = function(){
+		        imageSrc = new Kinetic.Image({
+		          x: 320,
+		          y: stage.getHeight() / 2 - 59,
+		          image: box,
+		          width: 106,
+		          height: 118
+		        });
+            };
+			box.src ='src/img/'+arg+'.jpeg';
+
+            box.on("dragstart", function() {
+              box.moveToTop();
+              layer.draw();
+            });
+
+            box.on("dragmove", function() {
+              document.body.style.cursor = "pointer";
+            });
+            /*
+             * dblclick to remove box for desktop app
+             * and dbltap to remove box for mobile app
+             */
+            box.on("dblclick dbltap", function() {
+              layer.remove(box);
+              layer.draw();
+            });
+
+            box.on("mouseover", function() {
+              document.body.style.cursor = "pointer";
+            });
+            box.on("mouseout", function() {
+              document.body.style.cursor = "default";
+            });
+
+            layer.add(box);
+            boxs.push(box);
+            layer.draw();
+            console.log(boxs);
+	}
+    function getChar(event) {
+		  if (event.which == null) {
+		    return String.fromCharCode(event.keyCode) // IE
+		  } else if (event.which!=0 && event.charCode!=0) {
+		    return String.fromCharCode(event.which)   // the rest
+		  } else {
+		    return null // special key
+		  }
+	}
+    </script>
+  </head>
+  <body onmousedown="return false;">
+    <div id="container"></div>
+  </body>
+</html>
